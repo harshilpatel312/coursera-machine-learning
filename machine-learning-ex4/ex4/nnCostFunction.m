@@ -8,8 +8,8 @@ function [J grad] = nnCostFunction(nn_params, ...
 %   [J grad] = NNCOSTFUNCTON(nn_params, hidden_layer_size, num_labels, ...
 %   X, y, lambda) computes the cost and gradient of the neural network. The
 %   parameters for the neural network are "unrolled" into the vector
-%   nn_params and need to be converted back into the weight matrices. 
-% 
+%   nn_params and need to be converted back into the weight matrices.
+%
 %   The returned parameter grad should be a "unrolled" vector of the
 %   partial derivatives of the neural network.
 %
@@ -24,8 +24,8 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
-         
-% You need to return the following variables correctly 
+
+% You need to return the following variables correctly
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
@@ -33,7 +33,7 @@ Theta2_grad = zeros(size(Theta2));
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
-%
+%%
 % Part 1: Feedforward the neural network and return the cost in the
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
@@ -53,12 +53,13 @@ h = a3;
 
 for c = 1:num_labels
     %Unregularized J
-    J = J + sum(1/m * (-(y == c)' * log(h(:,c)) - (1 - (y == c))' * log(1 - h(:,c)))); 
+    J = J + sum(1/m * (-(y == c)' * log(h(:,c)) - (1 - (y == c))' * log(1 - h(:,c))));
 end
 
 %Regularized J
 J = J + lambda/(2*m) * [sumsqr(Theta1(:,2:end)) + sumsqr(Theta2(:,2:end))];
 
+%%
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -71,31 +72,41 @@ J = J + lambda/(2*m) * [sumsqr(Theta1(:,2:end)) + sumsqr(Theta2(:,2:end))];
 %               cost function.
 %
 %         Hint: We recommend implementing backpropagation using a for-loop
-%               over the training examples if you are implementing it for the 
+%               over the training examples if you are implementing it for the
 %               first time.
 
 for t = 1:m
     %Step 1: Feedforward pass
-    a1 = X(t,:);
-    z2 = [1 a1] * Theta1';
-    a2 = sigmoid(z2);
-    z3 = [1 a2] * Theta2';
-    a3 = sigmoid(z3);
-    
+    a1 = X(t,:)'; % 400 x 1
+    z2 = Theta1 * [1; a1]; % 25 x 1
+    a2 = sigmoid(z2); % 25 x 1
+    z3 = Theta2 * [1; a2]; % 10 x 1
+    a3 = sigmoid(z3); % 10 x 1
+
     %Step 2: Calculate error in the hypothesis and the labelled outputs
-    delta3 = a3 - y(t);
-    
+    %Note: For each iteration, delta = a3 - y, where y is a one-hot vector of output
+
+    delta3 = a3 - [(1:num_labels) == y(t)]'; % 10 x 1
+
     %Step 3: Calculate error for previous layers
-    delta2 = Theta2' * delta3' .* sigmoidGradient(z2);
-    
+    %Note that the arg to g'(z) was changed from z2 to [1 z2]. This is because while backpropogating,
+    %we have to calculate the error for the bias term also.
+    %Just make sure that there is only one error term per neuron, i.e. dim(delta) = s_l x 1;
+
+    delta2 = Theta2' * delta3 .* sigmoidGradient([1 z2'])'; % 26 x 1
+
+    delta2 = delta2(2:end); %Remove the delta for bias term;
+                            %Not done for delta3 as output does not have bias term
+
     %
-    DELTA_1 = DELTA_1 + delta2(2:end) * a1';
-    DELTA_2 = DELTA_2 + delta3(2:end) * a2';
+    Theta1_grad = Theta1_grad + delta2 * [1; a1]'; % 25 x 401
+    Theta2_grad = Theta2_grad + delta3 * [1; a2]'; % 10 x 26
 end
 
-    Theta1_grad = DELTA_1/m;
-    Theta2_grad = DELTA_2/m;
-    
+    Theta1_grad = Theta1_grad/m;
+    Theta2_grad = Theta2_grad/m;
+
+%%
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
