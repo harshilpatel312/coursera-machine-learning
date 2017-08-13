@@ -67,7 +67,7 @@ J = J + lambda/(2*m) * [sumsqr(Theta1(:,2:end)) + sumsqr(Theta2(:,2:end))];
 %         that your implementation is correct by running checkNNGradients
 %
 %         Note: The vector y passed into the function is a vector of labels
-%               containing values from 1..K. You need to map this vector into a 
+%               containing values from 1..K. You need to map this vector into a
 %               binary vector of 1's and 0's to be used with the neural network
 %               cost function.
 %
@@ -103,8 +103,9 @@ for t = 1:m
     Theta2_grad = Theta2_grad + delta3 * [1; a2]'; % 10 x 26
 end
 
-    Theta1_grad = Theta1_grad/m;
-    Theta2_grad = Theta2_grad/m;
+    %Without Regularization
+%     Theta1_grad = Theta1_grad/m;
+%     Theta2_grad = Theta2_grad/m;
 
 %%
 % Part 3: Implement regularization with the cost function and gradients.
@@ -114,6 +115,16 @@ end
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+
+    %With Regularization
+    Theta1_grad(:,1) = Theta1_grad(:, 1)/m;
+    Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end)/m + lambda/m * Theta1(:, 2:end);
+    Theta2_grad(:,1) = Theta2_grad(:, 1)/m;
+    Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end)/m + lambda/m * Theta2(:, 2:end);
+
+    %Another, cleaner way: With Regularization
+%     Theta1_grad = (1/m) * Theta1_grad + (lambda/m) * [zeros(size(Theta1, 1), 1) Theta1(:,2:end)];
+%     Theta2_grad = (1/m) * Theta2_grad + (lambda/m) * [zeros(size(Theta2, 1), 1) Theta2(:,2:end)];
 
 % -------------------------------------------------------------
 
