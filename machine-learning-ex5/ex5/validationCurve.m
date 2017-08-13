@@ -39,14 +39,23 @@ error_val = zeros(length(lambda_vec), 1);
 %
 %
 
+m = size(X, 1);
+m_val = size(Xval, 1);
 
+for i = 1:length(lambda_vec)
+    lambda = lambda_vec(i);
+    theta = trainLinearReg(X, y, lambda);
+    
+    %training error
+    h = X * theta;
+    A = (h - y).^2;
+    error_train(i) = 1/(2*m) * sum(A);
 
-
-
-
-
-
-
+    %cross validation error
+    h_val = Xval * theta;
+    B = (h_val - yval).^2;
+    error_val(i) = 1/(2*m_val) * sum(B);
+end
 
 % =========================================================================
 

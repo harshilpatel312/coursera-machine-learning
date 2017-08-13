@@ -164,7 +164,7 @@ fprintf('\nProgram paused. Press enter to continue.\n');
 %  lambda to see how the fit and learning curve change.
 %
 
-lambda = 0;
+lambda = 2;
 [theta] = trainLinearReg(X_poly, y, lambda);
 
 % Plot training data and fit
