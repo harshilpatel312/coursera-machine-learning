@@ -164,7 +164,7 @@ fprintf('\nProgram paused. Press enter to continue.\n');
 %  lambda to see how the fit and learning curve change.
 %
 
-lambda = 2;
+lambda = 0;
 [theta] = trainLinearReg(X_poly, y, lambda);
 
 % Plot training data and fit
@@ -218,3 +218,19 @@ end
 
 fprintf('Program paused. Press enter to continue.\n');
 %pause;
+
+%% =========== Part 9: Computing test set error =============
+
+[mini, idx] = min(error_val);
+lambda = lambda_vec(idx);
+theta = trainLinearReg(X_poly, y, lambda);
+
+%Test error
+m = size(X_poly_test,1);
+h_test = X_poly_test * theta;
+A = (h_test - ytest).^2;
+error_test = 1/(2*m) * sum(A);
+
+%% =========== Part 10: Plotting learning curves with randomly selected examples =============
+
+% TODO
