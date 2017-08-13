@@ -21,11 +21,11 @@ grad = zeros(size(theta));
 
 h = X * theta;
 A = (h - y).^2;
-J = 1/(2*m) * sum(A) + lambda/(2*m) * sum(theta(:,2:end).^2);
+J = 1/(2*m) * sum(A) + lambda/(2*m) * sum(theta(2:end).^2);
 
 B = h - y;
-grad(:,1) = 1/m * (B' * X(:,1))';
-grad(:,2:end) = 1/m * (B' * X(:,2:end)) + lambda/m * theta(:,2:end);
+grad(1) = 1/m * (B' * X(:,1))';
+grad(2:end) = 1/m * (B' * X(:,2:end))' + lambda/m * theta(2:end);
 
 % =========================================================================
 
