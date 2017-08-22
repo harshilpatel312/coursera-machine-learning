@@ -133,7 +133,7 @@ fprintf(['\nRunning PCA on face dataset.\n' ...
 [U, S] = pca(X_norm);
 
 %  Visualize the top 36 eigenvectors found
-displayData(U(:, 1:36)');
+displayData(U(:, 1:56)');
 
 fprintf('Program paused. Press enter to continue.\n');
 %pause;
@@ -185,7 +185,7 @@ fprintf('Program paused. Press enter to continue.\n');
 %  pixel colors of an image. We first visualize this output in 3D, and then
 %  apply PCA to obtain a visualization in 2D.
 
-close all; close all; clc
+close all; clear all; clc
 
 % Reload the image from the previous exercise and run K-Means on it
 % For this to work, you need to complete the K-Means assignment first
