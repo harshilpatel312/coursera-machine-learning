@@ -39,21 +39,18 @@ Theta_grad = zeros(size(Theta));
 %        Theta_grad - num_users x num_features matrix, containing the 
 %                     partial derivatives w.r.t. to each element of Theta
 %
+h = X * Theta';
+A = (h - Y).^2;
+J_unreg = 1/2 * sum(A(R==1)); %unregularized
+J = J_unreg + lambda/2 * sum(sum(Theta.^2)) + lambda/2 * sum(sum(X.^2)); %regularized
 
+B = ((h.*R) - (Y.*R)) * Theta;
+X_grad_unreg = B; %unregularized
+X_grad = X_grad_unreg + lambda * X; %regularized
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+C = ((h.*R) - (Y.*R))' * X;
+Theta_grad_unreg = C;
+Theta_grad = Theta_grad_unreg + lambda * Theta;
 
 % =============================================================
 
